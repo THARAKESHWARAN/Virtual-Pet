@@ -1,7 +1,7 @@
 var dogImg, happyDog;
 var dog;
 var database, Foodref
-var Food = 0;
+var foodStock = 0;
 var state;
 var time;
 var hour;
@@ -38,10 +38,10 @@ function draw() {
   stroke(255, 255, 255);
   strokeWeight(2);
 
-  if (Food < 0) {
-    Food = 0;
-  }else if(Food > 19){
-    Food = 20;
+  if (foodStock < 0) {
+    foodStock = 0;
+  }else if(foodStock > 19){
+    foodStock = 20;
   }
 
   execution();
@@ -54,8 +54,8 @@ function draw() {
     text("If you need to get food, come exacty at even times!", 30, 470);
   }
 
-  if (Food > -1) {
-    text("Food available: " + Food, 50, 50);
+  if (foodStock > -1) {
+    text("Food available: " + foodStock, 50, 50);
   }
 
 }
@@ -66,14 +66,14 @@ async function Database() {
   Foodref = await database.ref("food");
   Foodref.on("value", (data) => {
     var read = data.val();
-    Food = read;
+    foodStock = read;
   });
 
 }
 
 function updateStock(x) {
-  x = Food+y;
-  if (Food) {
+  x = foodStock+y;
+  if (foodStock) {
     database.ref("/").set({
       food: x
     });
@@ -92,7 +92,7 @@ async function FetchTime() {
 
 function keyPressed() {
   if (keyCode === 38 && dog.state === "hungry") {
-    Food = Food - 1;
+    foodStock = foodStock - 1;
     dog.stomach = dog.stomach + 1;
     dog.state = "happy";
   }
