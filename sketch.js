@@ -22,12 +22,12 @@ function setup() {
 
   hour = hour();
 
-  
   if (hour % 2 === 0) {
     y++;
-  }
+  };
 
 }
+
 
 
 function draw() {
@@ -40,23 +40,22 @@ function draw() {
 
   if (foodStock < 0) {
     foodStock = 0;
-  }else if(foodStock > 19){
+  } else if (foodStock > 19) {
     foodStock = 20;
   }
+  
+  drawSprites();
+  dog.display();
 
-  execution();
-
-  if (dog.state === "hungry"){ 
+  if (dog.state === "hungry") {
     text("You can Feed Your Dog Pressing Up-arrow!", 50, 470);
   }
 
   if (dog.state === "happy") {
-    text("If you need to get food, come exacty at even times!", 30, 470);
+    text("If you need to get food, come back at even hours!", 30, 470);
   }
 
-  if (foodStock > -1) {
-    text("Food available: " + foodStock, 50, 50);
-  }
+  text("Food available: " + foodStock, 50, 50);
 
 }
 
@@ -66,43 +65,23 @@ async function Database() {
   Foodref = await database.ref("food");
   Foodref.on("value", (data) => {
     var read = data.val();
-    foodStock = read;
+    foodStock = read + y;
   });
 
 }
 
 function updateStock(x) {
-  x = foodStock+y;
-  if (foodStock) {
-    database.ref("/").set({
-      food: x
-    });
-  }
-}
-
-async function FetchTime() {
-
-  var response = await fetch("https://worldtimeapi.org/api/timezone/Asia/Kolkata");
-  var responseJson = await response.json();
-
-  var dateTime = responseJson.datetime;
-  hour = dateTime.slice(11, 19);
-
+  database.ref("/").set({
+    food: x
+  });
 }
 
 function keyPressed() {
   if (keyCode === 38 && dog.state === "hungry") {
     foodStock = foodStock - 1;
-    dog.stomach = dog.stomach + 1;
     dog.state = "happy";
+    updateStock(foodStock);
   }
-}
-
-function execution() {
-  drawSprites();
-  dog.display();
-  updateStock();
-  FetchTime();
 }
 
 

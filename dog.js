@@ -5,7 +5,6 @@ class Dog {
         this.body.addImage("dog", dogImg);
         this.body.addImage("happyDog", happyDog);
         this.body.scale = 0.5;
-        this.stomach = 0;
         this.state = "hungry";
     }
 
