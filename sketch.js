@@ -40,6 +40,8 @@ function draw() {
 
   if (foodStock < 0) {
     foodStock = 0;
+  }else if(foodStock === 0){
+    foodStock = 0;
   }
   
   drawSprites();
