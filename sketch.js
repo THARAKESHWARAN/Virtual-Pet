@@ -44,16 +44,13 @@ function draw() {
 
   var minut = minute();
 
-
-  for (i = 2; i < 10; i++) {
-    if (dog.state === "happy") {
-      if (LastFed + i === minut) {
-        dog.state = "hungry";
-        lastAdd = "no";
-      }
-    } else {
-
+  if (dog.state === "happy") {
+    if (LastFed + 2 === minut) {
+      dog.state = "hungry";
+      lastAdd = "no";
     }
+  } else {
+
   }
 
   drawSprites();
