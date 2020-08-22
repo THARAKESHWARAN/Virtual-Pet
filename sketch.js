@@ -2,10 +2,12 @@ var dogImg, happyDog;
 var dog;
 var database, Foodref
 var foodStock = 0;
-var state;
 var time;
 var hour;
 var y = 0;
+var LastFed = null;
+var lastAdd = "no";
+var i;
 
 function preload() {
   dogImg = loadImage("images/Dog.png");
@@ -18,13 +20,9 @@ function setup() {
 
   dog = new Dog();
 
+  dog.state = "hungry";
+
   Database();
-
-  hour = hour();
-
-  if (hour % 2 === 0) {
-    y++;
-  };
 
 }
 
@@ -40,11 +38,30 @@ function draw() {
 
   if (foodStock < 0) {
     foodStock = 0;
-  }else if(foodStock === 0){
-    foodStock = 0;
+  } else if (foodStock > 20) {
+    foodStock = 20;
   }
-  
+
+  var minut = minute();
+
+
+  for (i = 2; i < 10; i++) {
+    if (dog.state === "happy") {
+      if (LastFed + i === minut) {
+        dog.state = "hungry";
+        lastAdd = "no";
+      }
+    } else {
+
+    }
+  }
+
   drawSprites();
+
+  if (lastAdd === "no" && foodStock !== 0) {
+    addFood();
+  }
+
   dog.display();
 
   if (dog.state === "hungry") {
@@ -64,14 +81,14 @@ async function Database() {
 
   Foodref = await database.ref("food");
   Foodref.on("value", (data) => {
-    var read = data.val();
-    foodStock = read + y;
+    foodStock = data.val();
+    updateStock(foodStock);
   });
 
 }
 
 function updateStock(x) {
-  database.ref("/").set({
+  database.ref("/").update({
     food: x
   });
 }
@@ -80,8 +97,28 @@ function keyPressed() {
   if (keyCode === 38 && dog.state === "hungry") {
     foodStock = foodStock - 1;
     dog.state = "happy";
+    lastFed();
     updateStock(foodStock);
   }
+}
+
+function addFood() {
+  var hr = hour();
+
+  if (hr % 2 === 0) {
+    y++
+    foodStock = foodStock + y;
+  }
+
+  updateStock(foodStock);
+
+  lastAdd = "yes";
+
+}
+
+function lastFed() {
+  var min = minute();
+  LastFed = min;
 }
 
 
